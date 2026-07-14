@@ -1,0 +1,91 @@
+<!--
+  chat.html
+  Expects:
+    messages - list of { role: "user" | "ai", content } dicts, oldest first.
+               Omit or pass an empty list to show the empty state.
+    response - (optional) most recent AI response, if the caller wants to
+               render it separately from `messages`.
+-->
+<main class="main">
+  {% include "navbar.html" %}
+
+  <section class="chat-area" data-chat-area>
+    <div class="chat-area__inner">
+
+      {% if messages %}
+      <div class="message-list" data-message-list>
+        {% for message in messages %}
+        <div class="message message--{{ 'user' if message.role == 'user' else 'ai' }}">
+          {% if message.role != 'user' %}
+          <div class="message__avatar">
+            <i data-lucide="sparkles"></i>
+          </div>
+          {% endif %}
+          <div class="message__body">
+            <div class="message__author">
+              {{ 'You' if message.role == 'user' else 'EduGenie' }}
+            </div>
+            <div class="message__bubble">{{ message.content | safe }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state" data-empty-state>
+        <div class="empty-state__mark">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <h1>Welcome to EduGenie</h1>
+        <p>Ask questions, learn concepts, and explore topics with AI.</p>
+
+        <div class="prompt-suggestions">
+          <button
+            type="button"
+            class="prompt-card"
+            data-suggested-prompt="Explain machine learning in simple terms"
+          >
+            <i data-lucide="brain-circuit"></i>
+            Explain Machine Learning
+          </button>
+          <button
+            type="button"
+            class="prompt-card"
+            data-suggested-prompt="Summarize this topic for me"
+          >
+            <i data-lucide="file-text"></i>
+            Summarize this topic
+          </button>
+          <button
+            type="button"
+            class="prompt-card"
+            data-suggested-prompt="Help me solve a coding problem"
+          >
+            <i data-lucide="code-2"></i>
+            Help me solve a coding problem
+          </button>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+  </section>
+
+  <div class="chat-input-wrap">
+    <form class="chat-input" data-chat-form autocomplete="off">
+      <button type="button" class="chat-input__attach" aria-label="Attach a file">
+        <i data-lucide="paperclip"></i>
+      </button>
+      <textarea
+        name="question"
+        rows="1"
+        placeholder="Ask a question..."
+        data-chat-textarea
+        required
+      ></textarea>
+      <button type="submit" class="chat-input__send" data-chat-send disabled aria-label="Send message">
+        <i data-lucide="arrow-up"></i>
+      </button>
+    </form>
+    <p class="chat-input-hint">EduGenie can make mistakes. Verify important information.</p>
+  </div>
+</main>

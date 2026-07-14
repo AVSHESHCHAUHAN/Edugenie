@@ -1,0 +1,53 @@
+<!--
+  sidebar.html
+  Expects (all optional, with sensible fallbacks):
+    username        - string, current user's display name
+    recent_chats    - list of { id, title } dicts, most recent first
+    active_chat_id  - id of the chat currently open, for highlighting
+-->
+<aside class="sidebar" data-sidebar>
+  <div class="sidebar__brand">
+    <div class="sidebar__brand-mark">
+      <i data-lucide="sparkles"></i>
+    </div>
+    <span class="sidebar__brand-name">EduGenie</span>
+  </div>
+
+  <a href="/" class="btn-new-chat">
+    <i data-lucide="plus"></i>
+    New chat
+  </a>
+
+  <p class="sidebar__section-label">Recent chats</p>
+
+  <nav class="sidebar__history">
+    {% if recent_chats %}
+      {% for chat in recent_chats %}
+      <a
+        href="/chat/{{ chat.id }}"
+        class="chat-history-item{% if active_chat_id and chat.id == active_chat_id %} is-active{% endif %}"
+      >
+        <i data-lucide="message-square"></i>
+        <span>{{ chat.title }}</span>
+      </a>
+      {% endfor %}
+    {% else %}
+      <p class="sidebar__empty-history">Your conversations will show up here.</p>
+    {% endif %}
+  </nav>
+
+  <div class="sidebar__footer">
+    <a href="/settings" class="sidebar__footer-link">
+      <i data-lucide="settings"></i>
+      Settings
+    </a>
+    <div class="sidebar__user">
+      <div class="sidebar__user-avatar">
+        {{ (username or "S")[0] | upper }}
+      </div>
+      <span class="sidebar__user-name">{{ username or "Student" }}</span>
+    </div>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" data-sidebar-overlay></div>
