@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduGenie — Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" data-sidebar>
+      <div class="sidebar__brand">
+        <div class="sidebar__brand-mark"><i data-lucide="sparkles"></i></div>
+        <span class="sidebar__brand-name">EduGenie</span>
+      </div>
+
+      <a href="#" class="btn-new-chat">
+        <i data-lucide="plus"></i>
+        New chat
+      </a>
+
+      <p class="sidebar__section-label">Recent chats</p>
+
+      <nav class="sidebar__history">
+        <a href="#" class="chat-history-item is-active">
+          <i data-lucide="message-square"></i><span>Explain machine learning</span>
+        </a>
+        <a href="#" class="chat-history-item">
+          <i data-lucide="message-square"></i><span>Photosynthesis summary</span>
+        </a>
+        <a href="#" class="chat-history-item">
+          <i data-lucide="message-square"></i><span>Binary search in Python</span>
+        </a>
+        <a href="#" class="chat-history-item">
+          <i data-lucide="message-square"></i><span>Newton's second law</span>
+        </a>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="sidebar__footer-link">
+          <i data-lucide="settings"></i>
+          Settings
+        </a>
+        <div class="sidebar__user">
+          <div class="sidebar__user-avatar">S</div>
+          <span class="sidebar__user-name">Student</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" data-sidebar-overlay></div>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="navbar">
+        <button class="navbar__menu-btn" type="button" data-menu-toggle aria-label="Toggle menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="navbar__brand">
+          <div class="navbar__brand-mark"><i data-lucide="sparkles"></i></div>
+          EduGenie
+        </div>
+      </header>
+
+      <section class="chat-area" data-chat-area>
+        <div class="chat-area__inner">
+          <div class="message-list" data-message-list>
+
+            <div class="message message--user">
+              <div class="message__body">
+                <div class="message__author">You</div>
+                <div class="message__bubble">
+                  <p>Can you explain how a binary search algorithm works?</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="message message--ai">
+              <div class="message__avatar"><i data-lucide="sparkles"></i></div>
+              <div class="message__body">
+                <div class="message__author">EduGenie</div>
+                <div class="message__bubble">
+                  <p>Binary search finds a value in a sorted list by repeatedly halving the search range:</p>
+                  <ul>
+                    <li>Look at the middle element</li>
+                    <li>If it matches, you're done</li>
+                    <li>If the target is smaller, search the left half</li>
+                    <li>If it's larger, search the right half</li>
+                  </ul>
+                  <p>It runs in O(log n) time, so doubling the list size only adds one extra step.</p>
+                  <pre><code>def binary_search(arr, target):
+    lo, hi = 0, len(arr) - 1
+    while lo &lt;= hi:
+        mid = (lo + hi) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] &lt; target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return -1</code></pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="message message--user">
+              <div class="message__body">
+                <div class="message__author">You</div>
+                <div class="message__bubble">
+                  <p>Got it — thanks!</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="message message--ai">
+              <div class="message__avatar"><i data-lucide="sparkles"></i></div>
+              <div class="message__body">
+                <div class="message__author">EduGenie</div>
+                <div class="message__bubble">
+                  <div class="typing-indicator"><span></span><span></span><span></span></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <div class="chat-input-wrap">
+        <form class="chat-input" onsubmit="return false;">
+          <button type="button" class="chat-input__attach" aria-label="Attach a file">
+            <i data-lucide="paperclip"></i>
+          </button>
+          <textarea rows="1" placeholder="Ask a question..."></textarea>
+          <button type="submit" class="chat-input__send" aria-label="Send message">
+            <i data-lucide="arrow-up"></i>
+          </button>
+        </form>
+        <p class="chat-input-hint">EduGenie can make mistakes. Verify important information.</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+    document.querySelector('[data-menu-toggle]').addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-open');
+    });
+    document.querySelector('[data-sidebar-overlay]').addEventListener('click', () => {
+      document.body.classList.remove('sidebar-open');
+    });
+    const ta = document.querySelector('textarea');
+    ta.addEventListener('input', () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 160) + 'px';
+    });
+  </script>
+</body>
+</html>

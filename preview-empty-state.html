@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduGenie — Empty State Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" data-sidebar>
+      <div class="sidebar__brand">
+        <div class="sidebar__brand-mark"><i data-lucide="sparkles"></i></div>
+        <span class="sidebar__brand-name">EduGenie</span>
+      </div>
+
+      <a href="#" class="btn-new-chat">
+        <i data-lucide="plus"></i>
+        New chat
+      </a>
+
+      <p class="sidebar__section-label">Recent chats</p>
+
+      <nav class="sidebar__history">
+        <p class="sidebar__empty-history">Your conversations will show up here.</p>
+      </nav>
+
+      <div class="sidebar__footer">
+        <a href="#" class="sidebar__footer-link">
+          <i data-lucide="settings"></i>
+          Settings
+        </a>
+        <div class="sidebar__user">
+          <div class="sidebar__user-avatar">S</div>
+          <span class="sidebar__user-name">Student</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="sidebar-overlay" data-sidebar-overlay></div>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="navbar">
+        <button class="navbar__menu-btn" type="button" data-menu-toggle aria-label="Toggle menu">
+          <i data-lucide="menu"></i>
+        </button>
+        <div class="navbar__brand">
+          <div class="navbar__brand-mark"><i data-lucide="sparkles"></i></div>
+          EduGenie
+        </div>
+      </header>
+
+      <section class="chat-area" data-chat-area>
+        <div class="chat-area__inner">
+          <div class="empty-state" data-empty-state>
+            <div class="empty-state__mark"><i data-lucide="sparkles"></i></div>
+            <h1>Welcome to EduGenie</h1>
+            <p>Ask questions, learn concepts, and explore topics with AI.</p>
+
+            <div class="prompt-suggestions">
+              <button type="button" class="prompt-card">
+                <i data-lucide="brain-circuit"></i>
+                Explain Machine Learning
+              </button>
+              <button type="button" class="prompt-card">
+                <i data-lucide="file-text"></i>
+                Summarize this topic
+              </button>
+              <button type="button" class="prompt-card">
+                <i data-lucide="code-2"></i>
+                Help me solve a coding problem
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="chat-input-wrap">
+        <form class="chat-input" onsubmit="return false;">
+          <button type="button" class="chat-input__attach" aria-label="Attach a file">
+            <i data-lucide="paperclip"></i>
+          </button>
+          <textarea rows="1" placeholder="Ask a question..."></textarea>
+          <button type="submit" class="chat-input__send" aria-label="Send message">
+            <i data-lucide="arrow-up"></i>
+          </button>
+        </form>
+        <p class="chat-input-hint">EduGenie can make mistakes. Verify important information.</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    lucide.createIcons();
+    document.querySelector('[data-menu-toggle]').addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-open');
+    });
+    document.querySelector('[data-sidebar-overlay]').addEventListener('click', () => {
+      document.body.classList.remove('sidebar-open');
+    });
+  </script>
+</body>
+</html>

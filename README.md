@@ -1,306 +1,78 @@
-# Edugenie
-EduGenie Google Gemini Powered Learning Assistant
+# EduGenie — Frontend
 
-EduGenie is an AI-powered learning assistant built using FastAPI and Google Gemini API.
+A minimal, ChatGPT/Gemini-style interface for an AI learning assistant, built with
+Jinja2 templates and vanilla CSS/JS, ready to plug into a FastAPI backend.
 
-Features
-🤖 AI Question Answering
-📚 Concept Explanation
-📝 Quiz Generation
-📄 Summarization
-🛤 Learning Path Suggestions
-🌙 Dark Mode
-📋 Copy Answer
-⬇ Download Notes
-🗑 Clear Chat
-Technologies Used
-Python
-FastAPI
-Google Gemini API
-HTML
-CSS
-JavaScript
-Installation
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-Open:
+## Structure
 
-http://127.0.0.1:8000
-Author
-Team Leader : Ogireddy Sravani Team member : Chintala Vanitha Team member : Veera VenkkateshhKottum Team member : Sailakshmi Pattisabha Team member : Prem Sai Bora
+```
+edugenie/
+├── main.py                     # minimal FastAPI app (GET /, POST /ask, GET /history)
+├── templates/
+│   ├── base.html                # <head>, fonts, CSS/JS includes, {% block body %}
+│   ├── index.html                # extends base.html, assembles the page
+│   ├── navbar.html               # mobile-only top bar with hamburger menu
+│   ├── sidebar.html              # logo, new chat, recent chats, settings
+│   └── chat.html                 # message list / empty state / input box
+├── static/
+│   ├── css/style.css             # all styling — design tokens at the top
+│   └── js/script.js              # sidebar toggle, sending messages, typing indicator
+├── preview.html                  # static preview with a sample conversation
+└── preview-empty-state.html      # static preview of the empty (first-visit) state
+```
 
-ER Diagram
-Overview
-The Entity Relationship Diagram (ERD) represents the logical database design of the EduGenie Learning Assistant. It illustrates the entities, their attributes, and the relationships required to support AI-powered educational services such as Question Answering, Concept Explanation, Quiz Generation, Text Summarization, and Personalized Learning Recommendations.
+`preview.html` and `preview-empty-state.html` have no Jinja syntax and no backend —
+open either directly in a browser to see the design with sample data.
 
-Entities
-The ER Diagram consists of six core entities:
+## Wiring to FastAPI
 
-USER
-USER_QUERY
-AI_RESPONSE
-QUIZ
-SUMMARY
-LEARNING_PATH
-Relationships
-One USER can submit multiple USER_QUERY records.
-Each USER_QUERY generates one AI_RESPONSE.
-One USER_QUERY can generate multiple QUIZ records.
-One USER_QUERY can generate multiple SUMMARY records.
-One USER_QUERY can generate multiple LEARNING_PATH records.
-Database Design
-The database follows proper normalization principles by separating users, educational requests, AI-generated responses, quizzes, summaries, and learning recommendations into individual entities. Primary and Foreign Keys maintain data integrity and support scalability.
+`main.py` shows the minimal setup:
 
-Future Scope
-The ER design supports future enhancements including:
+- **`GET /`** — renders `index.html` with `username`, `messages`, and `recent_chats`.
+- **`POST /ask`** — accepts `{ "question": "..." }`, calls Gemini, returns
+  `{ "response": "..." }`. `static/js/script.js` already calls this endpoint and
+  appends both the user's question and the AI's reply to the page, showing the
+  three-dot typing indicator while it waits.
+- **`GET /history`** — returns stored messages, e.g. to restore a session on load.
 
-User Authentication
-Student Progress Tracking
-Persistent Chat History
-Cloud Database Integration
-Multilingual Learning
-AI Analytics Dashboard
-Mobile Application Support
-Epic 1 - Model Selection and Architecture
-Objective
-Set up the EduGenie AI learning assistant using FastAPI and Google Gemini.
+To connect the real model, replace the placeholder in `main.py`:
 
-Features Completed
-FastAPI project setup
-Google Gemini API integration
-Question & Answer module
-Learning Path module
-Quiz module
-Summary module
-HTML Templates
-Static files support
-Environment variable configuration using .env
-Technologies Used
-Python
-FastAPI
-Google Gemini API
-Jinja2
-HTML/CSS
-Pre-Requisites
-Before running EduGenie, ensure the following software is installed:
+```python
+import google.generativeai as genai
 
-Python 3.10+
-FastAPI
-Uvicorn
-Google Gemini API Key
-Jinja2
-HTML, CSS, JavaScript
-Git
-Visual Studio Code
-Installation
-pip install -r requirements.txt
-uvicorn app.main:app --reload
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+model = genai.GenerativeModel("gemini-1.5-flash")
 
-# Epic 2 - Module Implementation
+@app.post("/ask")
+async def ask(payload: AskRequest):
+    result = model.generate_content(payload.question)
+    return {"response": result.text}
+```
 
-## Objective
+## Template placeholders
 
-Implement the core AI learning modules of EduGenie to provide different learning services using Google Gemini AI.
+| Placeholder      | Type                        | Used in                     |
+|-------------------|------------------------------|------------------------------|
+| `{{ username }}`  | string                      | `sidebar.html`               |
+| `{{ messages }}`  | list of `{role, content}`   | `chat.html`                  |
+| `{{ recent_chats }}` | list of `{id, title}`    | `sidebar.html`               |
+| `{{ response }}`  | string (optional)           | available if you want to render the latest AI reply separately |
 
-## Modules Implemented
-
-- Question Answering Module
-- Concept Explanation Module
-- Quiz Generation Module
-- Summarization Module
-- Learning Path Module
-
-## Features Completed
-
-- Created separate Python modules for each learning task.
-- Integrated all modules with Google Gemini AI.
-- Improved code organization using modular architecture.
-- Connected frontend with backend modules.
-- Implemented AI response generation for each selected task.
-- Added exception handling for API errors.
-
-## Technologies Used
-
-- Python
-- Google Gemini API
-- FastAPI
-
-# Backend API with FastAPI
-
-## Objective
-
-Develop a FastAPI backend to process user requests, communicate with Google Gemini AI, and manage chat interactions.
-
-## Backend Features Completed
-
-- FastAPI application setup
-- Google Gemini API integration
-- POST API endpoint for processing user questions
-- GET API endpoint for homepage
-- Dynamic Jinja2 template rendering
-- Static files configuration
-- Chat history management
-- Clear Chat endpoint
-- Environment variable support using `.env`
-- Exception handling for API errors
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Load EduGenie homepage |
-| POST | `/ask` | Process user questions |
-| GET | `/clear` | Clear chat history |
-
-## Technologies Used
-
-- Python
-- FastAPI
-- Google Gemini API
-- Jinja2 Templates
-- HTML
-- CSS
-- JavaScript
-- python-dotenv
-
-# Epic 3 - Build Web Interface
-
-## Objective
-
-Develop a responsive and user-friendly web interface for EduGenie using HTML, CSS, JavaScript, and Jinja2 templates.
-
-## Features Completed
-
-- Professional AI-inspired user interface
-- Responsive web design for desktop and mobile
-- Modern navigation header
-- Interactive hero section
-- AI task selection interface
-- Question Answering interface
-- Concept Explanation interface
-- Quiz Generation interface
-- Text Summarization interface
-- Learning Path interface
-- Dynamic chat interface
-- AI response display
-- Chat history
-- Dark Mode
-- Copy Answer
-- Download Notes
-- Clear Chat
-- Loading animation
-- Smooth UI animations and transitions
-- Responsive cards and components
-
-## Technologies Used
-
-- HTML5
-- CSS3
-- JavaScript
-- FastAPI
-- Jinja2 Templates
-
-# Epic 3 - Live Integration
-
-## Objective
-
-Integrate the frontend interface with the FastAPI backend to enable real-time communication with Google Gemini AI.
-
-## Features Completed
-
-- Connected HTML forms with FastAPI
-- POST request handling
-- User input processing
-- Google Gemini AI integration
-- Dynamic response rendering
-- Chat history management
-- Error handling
-- Jinja2 template rendering
-- Static file support
-
-## AI Model
-
-EduGenie uses **Google Gemini 2.5 Flash** as its primary Large Language Model (LLM) to power intelligent educational interactions.
-
-### Model Capabilities
-
-- Intelligent Question Answering
-- Concept Explanation
-- Quiz Generation
-- Educational Text Summarization
-- Personalized Learning Recommendations
-- Fast Response Generation
-- Natural Language Understanding
-
-### Model Used
-
-- **Google Gemini 2.5 Flash**
-
-# Epic 4 - Local Deployment and Functional Testing
-
-## Objective
-
-Deploy the EduGenie Learning Assistant in a local development environment and perform functional testing to verify that all AI-powered educational modules work correctly through the FastAPI backend.
-
----
-
-## Run Locally
-
-### Objective
-
-Execute the EduGenie application using FastAPI and Uvicorn to enable local development, testing, and real-time interaction.
-
-### Features Completed
-
-- Configured FastAPI application for local execution
-- Started the application using Uvicorn
-- Enabled automatic server reload using the `--reload` option
-- Successfully launched the local development server
-- Verified frontend and backend connectivity
-- Tested the application through a web browser
-- Confirmed successful communication with the Google Gemini API
-
-### Command Used
+## Run it
 
 ```bash
-uvicorn app.main:app --reload
-Local Server URL
-http://127.0.0.1:8000
-Functional Testing
-Objective
-Verify that all educational modules perform correctly and produce accurate AI-generated responses under normal user interactions.
+pip install fastapi uvicorn jinja2 python-multipart
+uvicorn main:app --reload
+```
 
-Functional Tests Performed
-Question Answering
-Concept Explanation
-Quiz Generation
-Text Summarization
-Personalized Learning Path
-Dark Mode
-Clear Chat
-Copy Answer
-Download Notes
-Chat History
-Test Results
-Module	Status
-Question Answering	✅ Passed
-Concept Explanation	✅ Passed
-Quiz Generation	✅ Passed
-Text Summarization	✅ Passed
-Learning Path	✅ Passed
-Dark Mode	✅ Passed
-Copy Answer	✅ Passed
-Download Notes	✅ Passed
-Clear Chat	✅ Passed
-Chat History	✅ Passed
-Outcome
-The EduGenie Learning Assistant was successfully executed in the local development environment. All frontend components communicated seamlessly with the FastAPI backend, and Google Gemini AI generated responses for each educational module. Functional testing confirmed that every feature operated correctly, providing a smooth and interactive learning experience.
+Then visit `http://127.0.0.1:8000`.
 
-Conclusion
-EduGenie is a modern AI-powered learning assistant developed using FastAPI and Google Gemini AI to provide an interactive educational experience.
+## Design notes
 
-The application offers intelligent features such as Question Answering, Concept Explanation, Quiz Generation, Text Summarization, and Personalized Learning Path recommendations through a professional, responsive web interface.
-
-The frontend was designed with HTML, CSS, JavaScript, and Jinja2 Templates, while FastAPI handles backend processing and Google Gemini AI generates intelligent educational responses. The application was successfully integrated, locally deployed, and functionally tested.
-
-With its modular architecture, responsive design, and AI-powered capabilities, EduGenie provides a scalable foundation for future enhancements such as user authentication, persistent chat history, PDF learning support, and multilingual learning assistance.
+- Font: **Inter**, loaded from Google Fonts.
+- Icons: **Lucide**, loaded via the `lucide` UMD build and initialized with
+  `lucide.createIcons()`.
+- Colors, spacing, and radii are defined as CSS custom properties at the top of
+  `style.css` — change them there to retheme the whole app.
+- Sidebar collapses behind a hamburger menu (`navbar.html`) under 768px; the chat
+  input stays fixed to the bottom of the viewport at every size.
